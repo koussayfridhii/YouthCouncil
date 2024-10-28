@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -30,21 +37,4 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
-}
-
-.section{
-  h1{
-    /* margin-left: -200%;
-    opacity: 0; */
-    animation: animateHeader 0.5s ease-in-out;
-    animation-timeline: scroll();
-    transition: all 0.5s ease;
-  }
-}
-@keyframes animateHeader {
-  0%{
-    margin-left: -200%;
-    opacity: 0;
-  }
-  100% { opacity:1; margin-left: 0;}
 }

@@ -1,9 +1,10 @@
 import "./App.css";
+import HeroScene from "./components/scenes/HeroScene";
 
 function App() {
   return (
     <>
-      <p className="text-sky-500">test</p>
+      <HeroScene />
     </>
   );
 }
