@@ -82,7 +82,7 @@ function HeroScene() {
       <div className="flex relative h-dvh w-full">
         <Canvas
           shadows={true}
-          className="overflow-visible w-full h-dvh scroll"
+          className="overflow-visible w-full scroll"
           camera={{ position: [-10, 16, 50], fov: 5 }}
         >
           <Environment preset="sunset" />
