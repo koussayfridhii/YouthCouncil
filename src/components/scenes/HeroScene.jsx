@@ -99,7 +99,7 @@ function HeroScene() {
               <Float floatIntensity={1.5} speed={1}>
                 <OrbitControls
                   enableZoom={false}
-                  enablePan={false}
+                  enablePan={true}
                   maxPolarAngle={Math.PI / 2}
                   minPolarAngle={Math.PI / 6}
                 />
