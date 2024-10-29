@@ -6,7 +6,6 @@ import {
   ScrollControls,
   Float,
   Environment,
-  Html,
 } from "@react-three/drei";
 import { Suspense, useEffect, useRef, useState } from "react";
 import CanvasLoader from "../Loader";
@@ -69,28 +68,8 @@ function HeroScene() {
     };
   }, []);
 
-  const onCanvasTouch = (e) => {
-    e.stopPropagation();
-    if (e.touches.length === 1) {
-      // Allow scrolling
-      document.body.style.overflow = "auto";
-    } else {
-      // Disable scrolling if more than one touch point is detected
-      document.body.style.overflow = "hidden";
-    }
-  };
-
-  const onCanvasTouchEnd = () => {
-    // Re-enable scrolling
-    document.body.style.overflow = "auto";
-  };
-
   return (
-    <div
-      className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh"
-      onTouchStart={onCanvasTouch}
-      onTouchEnd={onCanvasTouchEnd}
-    >
+    <div className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh">
       <div className="flex relative h-dvh w-full">
         <Canvas
           shadows={true}
@@ -105,7 +84,8 @@ function HeroScene() {
               <Float floatIntensity={1.5} speed={1}>
                 <OrbitControls
                   enableZoom={false}
-                  enablePan={false}
+                  enableRotate={!isMobile}
+                  enablePan={true}
                   maxPolarAngle={Math.PI / 2}
                   minPolarAngle={Math.PI / 6}
                 />
