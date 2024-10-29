@@ -87,9 +87,9 @@ function HeroScene() {
         >
           <Environment preset="sunset" />
           <Suspense fallback={<CanvasLoader />}>
-            <Background />
-            <StarsCanvas />
             <ScrollControls pages={2} damping={0.25}>
+              <Background />
+              <StarsCanvas />
               <Float floatIntensity={1.5} speed={1}>
                 <OrbitControls
                   enableZoom={false}
