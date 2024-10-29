@@ -6,7 +6,6 @@ import {
   ScrollControls,
   Float,
   Environment,
-  CameraControls,
 } from "@react-three/drei";
 import { Suspense, useEffect, useRef, useState } from "react";
 import CanvasLoader from "../Loader";
@@ -57,6 +56,7 @@ const Background = () => {
 
 function HeroScene() {
   const [isMobile, setIsMobile] = useState(false);
+  const canvasRef = useRef();
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 500px)");
     setIsMobile(mediaQuery.matches);
@@ -68,7 +68,11 @@ function HeroScene() {
       mediaQuery.removeEventListener("change", handleMediaQueryChange);
     };
   }, []);
-
+  // useFrame((_state, delta) => {
+  //   if (canvasRef.current) {
+  //     canvasRef.current.rotation.x += delta * (BG_SPEED / 2);
+  //   }
+  // });
   return (
     <div className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh">
       <div className="flex relative h-dvh w-full">
@@ -91,7 +95,6 @@ function HeroScene() {
                     minPolarAngle={Math.PI / 6}
                   />
                 )}
-                {isMobile && <CameraControls />}
 
                 <People isMobile={isMobile} />
                 <Birds isMobile={isMobile} />
