@@ -89,6 +89,7 @@ function HeroScene() {
           <OrbitControls
             enableZoom={false}
             enablePan={false}
+            enableTouchScroll={true}
             maxPolarAngle={Math.PI / 2}
             minPolarAngle={Math.PI / 6}
           />
