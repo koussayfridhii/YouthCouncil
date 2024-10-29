@@ -56,29 +56,35 @@ const Background = () => {
 
 function HeroScene() {
   const [isMobile, setIsMobile] = useState(false);
-
   useEffect(() => {
     // Add a listener for changes to the screen size
     const mediaQuery = window.matchMedia("(max-width: 500px)");
-
     // Set the initial value of the `isMobile` state variable
     setIsMobile(mediaQuery.matches);
-
     // Define a callback function to handle changes to the media query
     const handleMediaQueryChange = (event) => {
       setIsMobile(event.matches);
     };
-
     // Add the callback function as a listener for changes to the media query
     mediaQuery.addEventListener("change", handleMediaQueryChange);
-
     // Remove the listener when the component is unmounted
     return () => {
       mediaQuery.removeEventListener("change", handleMediaQueryChange);
     };
   }, []);
+
+  const handleTouchStart = (event) => {
+    if (event.touches.length === 2) {
+      // Prevent default scroll behavior if there are two touch points
+      event.preventDefault();
+    }
+  };
+
   return (
-    <div className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh">
+    <div
+      className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh"
+      onTouchStart={handleTouchStart}
+    >
       <div className="flex relative h-dvh w-full">
         <Canvas
           shadows={true}
@@ -91,6 +97,12 @@ function HeroScene() {
               <Background />
               <StarsCanvas />
               <Float floatIntensity={1.5} speed={1}>
+                <OrbitControls
+                  enableZoom={false}
+                  enablePan={false}
+                  maxPolarAngle={Math.PI / 2}
+                  minPolarAngle={Math.PI / 6}
+                />
                 <People isMobile={isMobile} />
                 <Birds isMobile={isMobile} />
                 <HeroNature isMobile={isMobile} />
