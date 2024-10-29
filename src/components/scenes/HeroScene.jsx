@@ -6,6 +6,7 @@ import {
   ScrollControls,
   Float,
   Environment,
+  CameraControls,
 } from "@react-three/drei";
 import { Suspense, useEffect, useRef, useState } from "react";
 import CanvasLoader from "../Loader";
@@ -90,6 +91,8 @@ function HeroScene() {
                     minPolarAngle={Math.PI / 6}
                   />
                 )}
+                {isMobile && <CameraControls />}
+
                 <People isMobile={isMobile} />
                 <Birds isMobile={isMobile} />
                 <HeroNature isMobile={isMobile} />
