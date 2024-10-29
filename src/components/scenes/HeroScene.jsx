@@ -82,13 +82,14 @@ function HeroScene() {
               <Background />
               <StarsCanvas />
               <Float floatIntensity={1.5} speed={1}>
-                <OrbitControls
-                  enableZoom={false}
-                  enableRotate={!isMobile}
-                  enablePan={true}
-                  maxPolarAngle={Math.PI / 2}
-                  minPolarAngle={Math.PI / 6}
-                />
+                {!isMobile && (
+                  <OrbitControls
+                    enableZoom={false}
+                    enablePan={false}
+                    maxPolarAngle={Math.PI / 2}
+                    minPolarAngle={Math.PI / 6}
+                  />
+                )}
                 <People isMobile={isMobile} />
                 <Birds isMobile={isMobile} />
                 <HeroNature isMobile={isMobile} />
