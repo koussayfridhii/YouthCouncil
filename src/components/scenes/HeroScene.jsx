@@ -86,18 +86,18 @@ function HeroScene() {
           camera={{ position: [-10, 16, 50], fov: 5 }}
         >
           <Environment preset="sunset" />
-          <OrbitControls
-            enableZoom={false}
-            enablePan={false}
-            enableTouchScroll={true}
-            maxPolarAngle={Math.PI / 2}
-            minPolarAngle={Math.PI / 6}
-          />
           <Suspense fallback={<CanvasLoader />}>
             <Background />
             <StarsCanvas />
             <ScrollControls pages={2} damping={0.25}>
               <Float floatIntensity={1.5} speed={1}>
+                <OrbitControls
+                  enableZoom={false}
+                  enablePan={false}
+                  enableTouchScroll={true}
+                  maxPolarAngle={Math.PI / 2}
+                  minPolarAngle={Math.PI / 6}
+                />
                 <People isMobile={isMobile} />
                 <Birds isMobile={isMobile} />
                 <HeroNature isMobile={isMobile} />
