@@ -1,11 +1,10 @@
-/* eslint-disable react/no-unknown-property */
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   ContactShadows,
   OrbitControls,
   ScrollControls,
   Float,
-  Environment,
+  Cloud,
 } from "@react-three/drei";
 import { Suspense, useEffect, useRef, useState } from "react";
 import CanvasLoader from "../Loader";
@@ -17,7 +16,7 @@ import Birds from "../canvas/Birds";
 import HeroOverlay from "../overlays/HeroOverlay";
 import People from "../canvas/People";
 
-const BG_SPEED = 0.4;
+const BG_SPEED = 0.1;
 
 const Background = () => {
   const bgRef = useRef();
@@ -56,7 +55,8 @@ const Background = () => {
 
 function HeroScene() {
   const [isMobile, setIsMobile] = useState(false);
-  const canvasRef = useRef();
+  const [isScrolling, setIsScrolling] = useState(false);
+
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 500px)");
     setIsMobile(mediaQuery.matches);
@@ -68,34 +68,42 @@ function HeroScene() {
       mediaQuery.removeEventListener("change", handleMediaQueryChange);
     };
   }, []);
-  // useFrame((_state, delta) => {
-  //   if (canvasRef.current) {
-  //     canvasRef.current.rotation.x += delta * (BG_SPEED / 2);
-  //   }
-  // });
+
   return (
     <div className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh">
       <div className="flex relative h-dvh w-full">
-        <Canvas
-          shadows={true}
-          className="overflow-visible w-full scroll"
-          camera={{ position: [-10, 16, 50], fov: 5 }}
-        >
-          <Environment preset="sunset" />
+        <Canvas shadows={true} className="overflow-visible w-full scroll">
+          <ambientLight intensity={1} />
           <Suspense fallback={<CanvasLoader />}>
-            <ScrollControls pages={2} damping={0.25}>
+            <ScrollControls
+              pages={2}
+              damping={0.25}
+              onScroll={() => setIsScrolling(true)}
+              onScrollEnd={() => setIsScrolling(false)}
+            >
               <Background />
               <StarsCanvas />
+              <Float floatIntensity={1.8} speed={1.1}>
+                <Cloud
+                  speed={0.6}
+                  width={500}
+                  depth={7.5}
+                  segments={80}
+                  color={"#C4E9EC"}
+                  fade={30}
+                  opacity={0.8}
+                  position={[0, 2, 0]}
+                  castShadow={false}
+                />
+              </Float>
               <Float floatIntensity={1.5} speed={1}>
-                {!isMobile && (
-                  <OrbitControls
-                    enableZoom={false}
-                    enablePan={false}
-                    maxPolarAngle={Math.PI / 2}
-                    minPolarAngle={Math.PI / 6}
-                  />
-                )}
-
+                <OrbitControls
+                  enableZoom={false}
+                  enablePan={false}
+                  maxPolarAngle={Math.PI / 2}
+                  minPolarAngle={Math.PI / 6}
+                  enabled={!isScrolling} // Disable during scrolling
+                />
                 <People isMobile={isMobile} />
                 <Birds isMobile={isMobile} />
                 <HeroNature isMobile={isMobile} />
