@@ -1,11 +1,9 @@
-/* eslint-disable react/no-unknown-property */
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   ContactShadows,
   OrbitControls,
   ScrollControls,
   Float,
-  // Environment,
   Cloud,
 } from "@react-three/drei";
 import { Suspense, useEffect, useRef, useState } from "react";
@@ -57,26 +55,56 @@ const Background = () => {
 
 function HeroScene() {
   const [isMobile, setIsMobile] = useState(false);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+  const [orbitEnabled, setOrbitEnabled] = useState(false);
+  const startYRef = useRef(null);
+
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 500px)");
     setIsMobile(mediaQuery.matches);
-    const handleMediaQueryChange = (event) => {
-      setIsMobile(event.matches);
-    };
+    const handleMediaQueryChange = (event) => setIsMobile(event.matches);
     mediaQuery.addEventListener("change", handleMediaQueryChange);
-    return () => {
+    return () =>
       mediaQuery.removeEventListener("change", handleMediaQueryChange);
-    };
   }, []);
 
+  const handleTouchStart = (event) => {
+    startYRef.current = event.touches[0].clientY;
+    setScrollEnabled(true);
+    setOrbitEnabled(false);
+  };
+
+  const handleTouchMove = (event) => {
+    const currentY = event.touches[0].clientY;
+    const diffY = Math.abs(currentY - startYRef.current);
+
+    // Enable orbit only for non-scrolling gestures (horizontal or idle touches)
+    if (diffY < 10) {
+      setScrollEnabled(false);
+      setOrbitEnabled(true);
+    } else {
+      setScrollEnabled(true);
+      setOrbitEnabled(false);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setScrollEnabled(true);
+    setOrbitEnabled(false);
+  };
+
   return (
-    <div className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh">
+    <div
+      className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="flex relative h-dvh w-full">
         <Canvas shadows={true} className="overflow-visible w-full scroll">
-          {/* <Environment preset="forest" /> */}
           <ambientLight intensity={1} />
           <Suspense fallback={<CanvasLoader />}>
-            <ScrollControls pages={2} damping={0.25}>
+            <ScrollControls pages={2} damping={0.25} enabled={scrollEnabled}>
               <Background />
               <StarsCanvas />
               <Float floatIntensity={1.8} speed={1.1}>
@@ -93,15 +121,13 @@ function HeroScene() {
                 />
               </Float>
               <Float floatIntensity={1.5} speed={1}>
-                {!isMobile && (
-                  <OrbitControls
-                    enableZoom={false}
-                    enablePan={false}
-                    maxPolarAngle={Math.PI / 2}
-                    minPolarAngle={Math.PI / 6}
-                  />
-                )}
-
+                <OrbitControls
+                  enableZoom={false}
+                  enablePan={false}
+                  maxPolarAngle={Math.PI / 2}
+                  minPolarAngle={Math.PI / 6}
+                  enabled={orbitEnabled}
+                />
                 <People isMobile={isMobile} />
                 <Birds isMobile={isMobile} />
                 <HeroNature isMobile={isMobile} />
