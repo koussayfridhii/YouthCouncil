@@ -55,7 +55,9 @@ const Background = () => {
 
 function HeroScene() {
   const [isMobile, setIsMobile] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false);
+  const [enableOrbit, setEnableOrbit] = useState(true);
+
+  const startYRef = useRef(null);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 500px)");
@@ -69,18 +71,38 @@ function HeroScene() {
     };
   }, []);
 
+  // Handle touch events for distinguishing between scroll and orbit
+  const handleTouchStart = (event) => {
+    startYRef.current = event.touches[0].clientY;
+  };
+
+  const handleTouchMove = (event) => {
+    const currentY = event.touches[0].clientY;
+    const diffY = Math.abs(currentY - startYRef.current);
+
+    // If swipe is primarily vertical, disable OrbitControls
+    if (diffY > 10) {
+      setEnableOrbit(false);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    // Re-enable OrbitControls after scroll ends
+    setEnableOrbit(true);
+  };
+
   return (
-    <div className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh">
+    <div
+      className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="flex relative h-dvh w-full">
         <Canvas shadows={true} className="overflow-visible w-full scroll">
           <ambientLight intensity={1} />
           <Suspense fallback={<CanvasLoader />}>
-            <ScrollControls
-              pages={2}
-              damping={0.25}
-              onScroll={() => setIsScrolling(true)}
-              onScrollEnd={() => setIsScrolling(false)}
-            >
+            <ScrollControls pages={2} damping={0.25}>
               <Background />
               <StarsCanvas />
               <Float floatIntensity={1.8} speed={1.1}>
@@ -102,7 +124,7 @@ function HeroScene() {
                   enablePan={false}
                   maxPolarAngle={Math.PI / 2}
                   minPolarAngle={Math.PI / 6}
-                  enabled={!isScrolling} // Disable during scrolling
+                  enabled={enableOrbit} // Toggle based on touch events
                 />
                 <People isMobile={isMobile} />
                 <Birds isMobile={isMobile} />
