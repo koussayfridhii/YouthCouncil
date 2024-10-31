@@ -17,8 +17,7 @@ import HeroOverlay from "../overlays/HeroOverlay";
 import People from "../canvas/People";
 
 const BG_SPEED = 0.1;
-const SCROLL_SENSITIVITY = 15; // Sensitivity for distinguishing scroll
-const DEBOUNCE_DELAY = 300; // Debounce delay in ms
+const SWIPE_THRESHOLD = 20; // Threshold for detecting horizontal or vertical swipe
 
 const Background = () => {
   const bgRef = useRef();
@@ -58,8 +57,9 @@ const Background = () => {
 function HeroScene() {
   const [isMobile, setIsMobile] = useState(false);
   const [enableOrbit, setEnableOrbit] = useState(true);
+
+  const startXRef = useRef(null);
   const startYRef = useRef(null);
-  const debounceRef = useRef(null);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 500px)");
@@ -73,25 +73,24 @@ function HeroScene() {
     };
   }, []);
 
+  // Touch event handling to distinguish between horizontal and vertical gestures
   const handleTouchStart = (event) => {
+    startXRef.current = event.touches[0].clientX;
     startYRef.current = event.touches[0].clientY;
   };
 
   const handleTouchMove = (event) => {
+    const currentX = event.touches[0].clientX;
     const currentY = event.touches[0].clientY;
+
+    const diffX = Math.abs(currentX - startXRef.current);
     const diffY = Math.abs(currentY - startYRef.current);
 
-    if (diffY > SCROLL_SENSITIVITY) {
+    // Enable orbit only on horizontal swipes and disable on vertical swipes
+    if (diffX > SWIPE_THRESHOLD && diffX > diffY) {
+      setEnableOrbit(true);
+    } else if (diffY > SWIPE_THRESHOLD && diffY > diffX) {
       setEnableOrbit(false);
-
-      // Clear the previous debounce timer if it exists
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-
-      // Set a new debounce timer to re-enable OrbitControls
-      debounceRef.current = setTimeout(
-        () => setEnableOrbit(true),
-        DEBOUNCE_DELAY
-      );
     }
   };
 
@@ -100,12 +99,6 @@ function HeroScene() {
       className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
-      onTouchEnd={() =>
-        (debounceRef.current = setTimeout(
-          () => setEnableOrbit(true),
-          DEBOUNCE_DELAY
-        ))
-      }
     >
       <div className="flex relative h-dvh w-full">
         <Canvas shadows={true} className="overflow-visible w-full scroll">
@@ -133,7 +126,7 @@ function HeroScene() {
                   enablePan={false}
                   maxPolarAngle={Math.PI / 2}
                   minPolarAngle={Math.PI / 6}
-                  enabled={enableOrbit} // Controlled by debounce
+                  enabled={enableOrbit} // Enable based on swipe direction
                 />
                 <People isMobile={isMobile} />
                 <Birds isMobile={isMobile} />
