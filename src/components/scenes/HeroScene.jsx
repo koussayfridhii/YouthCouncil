@@ -17,6 +17,8 @@ import HeroOverlay from "../overlays/HeroOverlay";
 import People from "../canvas/People";
 
 const BG_SPEED = 0.1;
+const SCROLL_SENSITIVITY = 15; // Sensitivity for distinguishing scroll
+const DEBOUNCE_DELAY = 300; // Debounce delay in ms
 
 const Background = () => {
   const bgRef = useRef();
@@ -56,8 +58,8 @@ const Background = () => {
 function HeroScene() {
   const [isMobile, setIsMobile] = useState(false);
   const [enableOrbit, setEnableOrbit] = useState(true);
-
   const startYRef = useRef(null);
+  const debounceRef = useRef(null);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 500px)");
@@ -71,7 +73,6 @@ function HeroScene() {
     };
   }, []);
 
-  // Handle touch events for distinguishing between scroll and orbit
   const handleTouchStart = (event) => {
     startYRef.current = event.touches[0].clientY;
   };
@@ -80,15 +81,18 @@ function HeroScene() {
     const currentY = event.touches[0].clientY;
     const diffY = Math.abs(currentY - startYRef.current);
 
-    // If swipe is primarily vertical, disable OrbitControls
-    if (diffY > 10) {
+    if (diffY > SCROLL_SENSITIVITY) {
       setEnableOrbit(false);
-    }
-  };
 
-  const handleTouchEnd = () => {
-    // Re-enable OrbitControls after scroll ends
-    setEnableOrbit(true);
+      // Clear the previous debounce timer if it exists
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+
+      // Set a new debounce timer to re-enable OrbitControls
+      debounceRef.current = setTimeout(
+        () => setEnableOrbit(true),
+        DEBOUNCE_DELAY
+      );
+    }
   };
 
   return (
@@ -96,7 +100,12 @@ function HeroScene() {
       className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      onTouchEnd={() =>
+        (debounceRef.current = setTimeout(
+          () => setEnableOrbit(true),
+          DEBOUNCE_DELAY
+        ))
+      }
     >
       <div className="flex relative h-dvh w-full">
         <Canvas shadows={true} className="overflow-visible w-full scroll">
@@ -124,7 +133,7 @@ function HeroScene() {
                   enablePan={false}
                   maxPolarAngle={Math.PI / 2}
                   minPolarAngle={Math.PI / 6}
-                  enabled={enableOrbit} // Toggle based on touch events
+                  enabled={enableOrbit} // Controlled by debounce
                 />
                 <People isMobile={isMobile} />
                 <Birds isMobile={isMobile} />
