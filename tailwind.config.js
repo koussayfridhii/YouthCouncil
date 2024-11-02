@@ -7,7 +7,16 @@ export default {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors:{
+        "indigo":'#4B0082',
+        "seaBreeze":"#14c2dd",
+        'midNight':"#252C37"
+      },
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"],
+      }
+    },
   },
   plugins: [],
 }

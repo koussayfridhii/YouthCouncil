@@ -53,7 +53,7 @@ export default function People({ isMobile, ...props }) {
       y: 4,
       z: 0,
       duration: 4,
-      delay: 4,
+      delay: 1,
     });
   });
   return (

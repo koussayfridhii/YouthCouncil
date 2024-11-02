@@ -11,35 +11,35 @@ export default function HeroOverlay() {
   useFrame(() => {
     tl.current.seek(scroll?.offset * tl.current.duration());
   });
+
   useLayoutEffect(() => {
     tl.current = gsap.timeline();
 
     tl.current.to(overlayRef.current, { opacity: 1 }, "start");
   });
+
   return (
     <Scroll html>
       <div
         ref={overlayRef}
-        className={`w-screen absolute top-full flex items-center justify-center flex-col`}
+        className="w-screen absolute top-full flex items-center justify-center flex-col"
         style={{ height: "300dvh" }}
       >
-        <h1 className="text-center text-red-700 text-5xl font-bold">
-          Youth Council
-        </h1>
-        <p className="text-center text-lg">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel
-          bibendum felis, at ultricies lectus. Donec non orci ut urna dictum
-          pharetra. Donec vitae tristique est, at maximus arcu. Donec non mauris
-          et felis bibendum consectetur.
-        </p>
-        <div className="flex justify-center">
-          <a
-            href="#"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full"
-          >
-            Contact Us
-          </a>
-        </div>
+        <a
+          href="#"
+          className="group block max-w-md p-6 bg-indigo border-2 border-seaBreeze rounded-lg shadow hover:bg-seaBreeze hover:border-indigo duration-500"
+        >
+          <h5 className="mb-2 text-2xl font-poppins font-bold tracking-tight text-seaBreeze group-hover:text-indigo duration-500">
+            Youth Council 2024
+          </h5>
+          <p className="font-normal text-gray-100 dark:text-gray-400">
+            The Youth Council, created by Participate, is composed of 15 young
+            individuals from Kasserine. It serves as a platform for these youths
+            to voice their opinions, engage in civic activities, and influence
+            local policies, aiming to foster leadership skills and empower the
+            youth community.
+          </p>
+        </a>
       </div>
     </Scroll>
   );

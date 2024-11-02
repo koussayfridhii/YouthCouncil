@@ -1,17 +1,18 @@
 /* eslint-disable react/no-unknown-property */
+import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   ContactShadows,
   OrbitControls,
   ScrollControls,
   Float,
-  // Environment,
-  Cloud,
+  Text,
 } from "@react-three/drei";
-import { Suspense, useEffect, useRef, useState } from "react";
-import CanvasLoader from "../Loader";
+import { Suspense, useEffect, useState } from "react";
+import { LayerMaterial, Noise, Depth } from "lamina";
 import * as Three from "three";
-import { Depth, LayerMaterial, Noise } from "lamina";
+import { useSpring, animated } from "@react-spring/three";
+import CanvasLoader from "../Loader";
 import HeroNature from "../canvas/Essence_of_nature";
 import StarsCanvas from "../canvas/Stars";
 import Birds from "../canvas/Birds";
@@ -69,29 +70,23 @@ function HeroScene() {
     };
   }, []);
 
+  const textRef = useRef();
+  const props = useSpring({
+    loop: { reverse: true },
+    from: { position: [0, 0.5, 4] },
+    to: { position: [0, 0.52, 4] },
+    config: { duration: 1000 },
+  });
+
   return (
     <div className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh">
       <div className="flex relative h-dvh w-full">
         <Canvas shadows={true} className="overflow-visible w-full scroll">
-          {/* <Environment preset="forest" /> */}
           <ambientLight intensity={1} />
           <Suspense fallback={<CanvasLoader />}>
             <ScrollControls pages={2} damping={0.25}>
               <Background />
               <StarsCanvas />
-              <Float floatIntensity={1.8} speed={1.1}>
-                <Cloud
-                  speed={0.6}
-                  width={500}
-                  depth={7.5}
-                  segments={80}
-                  color={"#C4E9EC"}
-                  fade={30}
-                  opacity={0.8}
-                  position={[0, 2, 0]}
-                  castShadow={false}
-                />
-              </Float>
               <Float floatIntensity={1.5} speed={1}>
                 {!isMobile && (
                   <OrbitControls
@@ -101,7 +96,6 @@ function HeroScene() {
                     minPolarAngle={Math.PI / 6}
                   />
                 )}
-
                 <People isMobile={isMobile} />
                 <Birds isMobile={isMobile} />
                 <HeroNature isMobile={isMobile} />
@@ -109,6 +103,17 @@ function HeroScene() {
               </Float>
               <HeroOverlay />
             </ScrollControls>
+            <animated.mesh {...props} ref={textRef}>
+              <Text
+                color="white"
+                fontSize={0.1}
+                anchorX="center"
+                anchorY="middle"
+                font="./fonts/Pacifico-Regular.ttf"
+              >
+                Scroll Down
+              </Text>
+            </animated.mesh>
           </Suspense>
         </Canvas>
       </div>
