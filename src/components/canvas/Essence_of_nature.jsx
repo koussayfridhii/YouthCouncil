@@ -66,8 +66,8 @@ export default function HeroNature({ isMobile, ...props }) {
         {...props}
         ref={group}
         dispose={null}
-        scale={isMobile ? 0.03 : 0.07}
-        position={[0, isMobile ? -1 : -2, 0]}
+        scale={isMobile ? 0.07 : 0.07}
+        position={[0, isMobile ? -1 : -2, 0]} // update mobile size and position
       >
         <mesh
           receiveShadow

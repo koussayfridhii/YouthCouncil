@@ -61,11 +61,11 @@ export default function People({ isMobile, ...props }) {
       ref={group}
       {...props}
       dispose={null}
-      scale={isMobile ? 0.3 : 0.5}
+      scale={isMobile ? 0.35 : 0.5}
       position={[
         isMobile ? 0.1 : 0.5,
-        isMobile ? -0.88 : -1.74,
-        isMobile ? 0.08 : 0.5,
+        isMobile ? -0.68 : -1.74,
+        isMobile ? 0.09 : 0.5,
       ]}
       rotateX={Math.PI / 8}
     >
