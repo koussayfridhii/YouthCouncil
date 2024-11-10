@@ -20,8 +20,11 @@ const TopicsScene = () => {
   };
   return (
     <div className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh">
-      <div className="flex relative h-dvh w-full">
-        <Canvas shadows={true} className="overflow-visible w-full scroll">
+      <div className="flex relative h-dvh w-10/12 mx-auto">
+        <Canvas
+          shadows={true}
+          className="overflow-visible w-full scroll mx-auto"
+        >
           <ambientLight intensity={1} />
           <CameraControls enableZoom={active} enablePan={false} />
           <Suspense fallback={<CanvasLoader />}>
