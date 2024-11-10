@@ -18,17 +18,20 @@ const TopicsScene = () => {
   const handleDoubleClick = (e) => {
     setActive(e.eventObject?.name);
   };
+  //TODO: adapt the portals to mobile devices "position changing in groups " and complete the logic to portal activation and desactivation "camer look at , and fading in and out "
+  // TODO: complete the worlds
   return (
     <div className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh">
-      <div className="flex relative h-dvh w-10/12 mx-auto">
-        <Canvas
-          shadows={true}
-          className="overflow-visible w-full scroll mx-auto"
-        >
+      <div
+        className={`flex relative h-dvh ${
+          active ? "w-full" : "w-8/12"
+        } mx-auto`}
+      >
+        <Canvas shadows={true} className=" w-full scroll mx-auto">
           <ambientLight intensity={1} />
           <CameraControls enableZoom={active} enablePan={false} />
           <Suspense fallback={<CanvasLoader />}>
-            <group>
+            <group position={[0, 0, 0]}>
               <Text
                 // font="fonts/Caprasimo-Regular.ttf"
                 fontSize={0.3}
