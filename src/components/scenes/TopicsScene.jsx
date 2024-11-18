@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import {
   CameraControls,
   Environment,
@@ -11,25 +11,38 @@ import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import CanvasLoader from "../Loader";
 import TropicalIsland from "../canvas/TropicalIsland";
-
+import TeachersLife from "../canvas/TeachersLife";
+//TODO:  and complete the logic to portal activation and desactivation "camer look at , and fading in and out "
+// TODO: complete the worlds
 const TopicsScene = () => {
   const portalMaterial = useRef();
   const [active, setActive] = useState(null);
   const handleDoubleClick = (e) => {
-    setActive(e.eventObject?.name);
+    !active && setActive(e.eventObject?.name);
   };
-  //TODO: adapt the portals to mobile devices "position changing in groups " and complete the logic to portal activation and desactivation "camer look at , and fading in and out "
-  // TODO: complete the worlds
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 500px)");
+    setIsMobile(mediaQuery.matches);
+    const handleMediaQueryChange = (event) => {
+      setIsMobile(event.matches);
+    };
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleMediaQueryChange);
+    };
+  }, []);
+
   return (
     <div className="bg-white relative text-black dark:bg-gray-800 dark:text-white m-0 p-0 w-full h-dvh">
       <div
         className={`flex relative h-dvh ${
-          active ? "w-full" : "w-8/12"
+          active ? "w-full" : isMobile ? "w-6/12" : "w-8/12"
         } mx-auto`}
       >
         <Canvas shadows={true} className=" w-full scroll mx-auto">
           <ambientLight intensity={1} />
-          <CameraControls enableZoom={active} enablePan={false} />
+          <CameraControls enableZoom={active} enablePan={false} makeDefault />
           <Suspense fallback={<CanvasLoader />}>
             <group position={[0, 0, 0]}>
               <Text
@@ -60,7 +73,10 @@ const TopicsScene = () => {
                 </MeshPortalMaterial>
               </RoundedBox>
             </group>
-            <group position={[-2.5, 0, 0.5]} rotation-y={Math.PI / 8}>
+            <group
+              position={isMobile ? [0, 3.5, 0] : [-2.5, 0, 0.5]}
+              rotation-y={isMobile ? 0 : Math.PI / 8}
+            >
               <Text
                 // font="fonts/Caprasimo-Regular.ttf"
                 fontSize={0.3}
@@ -84,12 +100,14 @@ const TopicsScene = () => {
                   blend={active === "Education" ? 1 : 0}
                 >
                   <ambientLight intensity={1} />
-                  <Environment preset="sunset" recieveShadow />
-                  <TropicalIsland />
+                  <TeachersLife />
                 </MeshPortalMaterial>
               </RoundedBox>
             </group>
-            <group position={[2.5, 0, 0.5]} rotation-y={-Math.PI / 8}>
+            <group
+              position={isMobile ? [0, -3.5, 0] : [2.5, 0, 0.5]}
+              rotation-y={isMobile ? 0 : -Math.PI / 8}
+            >
               <Text
                 // font="fonts/Caprasimo-Regular.ttf"
                 fontSize={0.3}
