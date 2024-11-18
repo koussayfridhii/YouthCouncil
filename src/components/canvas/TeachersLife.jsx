@@ -92,7 +92,7 @@ export default function TeachersLife(props) {
       </Text>
       <BlackKid />
       <Environment
-        files="./assets/images/meadow_2_4k.hdr"
+        files="./assets/images/meadow_2_1k.hdr"
         background
         ground={{ scale: 5000, height: 15, radius: 27 }}
       />
