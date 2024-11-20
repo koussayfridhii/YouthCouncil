@@ -124,6 +124,11 @@ export default function TropicalIsland(props) {
         dispose={null}
         position={[0, 0, -4]}
         rotation={[0.2, 3.1, 0]}
+        onDoubleClick={() => {
+          props.active === "Ecology"
+            ? props.setActive(null)
+            : props.setActive("Ecology");
+        }}
       >
         <group name="Sketchfab_Scene">
           <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]}>

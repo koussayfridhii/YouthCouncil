@@ -94,7 +94,7 @@ export default function TeachersLife(props) {
       <Environment
         files="./assets/images/meadow_2_1k.hdr"
         background
-        ground={{ scale: 5000, height: 15, radius: 27 }}
+        ground={{ scale: 1000, height: 10, radius: 27 }}
       />
       <group
         ref={group}
@@ -103,6 +103,11 @@ export default function TeachersLife(props) {
         scale={0.9}
         position={[0, -1, 0.5]}
         rotation-y={-Math.PI / 6}
+        onDoubleClick={() => {
+          props.active === "Education"
+            ? props.setActive(null)
+            : props.setActive("Education");
+        }}
       >
         <group name="Sketchfab_Scene">
           <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]}>
